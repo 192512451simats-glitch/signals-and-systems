@@ -1,0 +1,44 @@
+clc;
+clear;
+close;
+
+// Open-loop transfer function
+s = poly(0, "s");
+
+num = 1;
+den = s*(s+2)*(s+4);
+
+G = syslin("c", num, den);
+
+disp("Open-loop Transfer Function G(s) = ");
+disp(G);
+
+// Root locus
+clf();
+evans(G, 50);
+title("Root Locus for K = 0 to 50");
+xgrid();
+
+// Characteristic equation:
+// s(s+2)(s+4) + K = 0
+// s^3 + 6s^2 + 8s + K = 0
+
+// Imaginary-axis crossing occurs at K = 48
+Kcritical = 48;
+
+disp("Critical Gain K = " + string(Kcritical));
+
+// Polynomial at critical gain
+P = s^3 + 6*s^2 + 8*s + Kcritical;
+
+disp("Characteristic Polynomial at K = 48:");
+disp(P);
+
+// Closed-loop poles
+poles = roots(P);
+
+disp("Closed-loop poles at critical K:");
+disp(poles);
+
+// Mark critical poles
+plot(real(poles), imag(poles), "ro");
