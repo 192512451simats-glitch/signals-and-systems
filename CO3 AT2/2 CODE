@@ -1,0 +1,52 @@
+clc;
+clear;
+close;
+
+// Transfer function
+s = poly(0, "s");
+
+num = 100;
+den = s^2 + 10*s + 100;
+
+H = syslin("c", num, den);
+
+disp("Transfer Function H(s) = ");
+disp(H);
+
+// Natural frequency and damping ratio
+wn = 10;
+zeta = 10/(2*wn);
+
+disp("Natural Frequency wn = " + string(wn) + " rad/s");
+disp("Damping Ratio zeta = " + string(zeta));
+
+// Bode plot
+clf();
+bode(H);
+title("Bode Plot of H(s)");
+
+// Frequency vector for calculating -3 dB point
+w = 0.01:0.01:100;
+
+mag = zeros(w);
+phase = zeros(w);
+
+for k = 1:length(w)
+    jw = %i*w(k);
+    val = 100/(jw^2 + 10*jw + 100);
+
+    mag(k) = 20*log10(abs(val));
+    phase(k) = atan(imag(val), real(val))*180/%pi;
+end
+
+// Find frequency closest to -3 dB
+[minimum, index] = min(abs(mag + 3));
+
+wc = w(index);
+phase_wc = phase(index);
+
+disp("-3 dB Cutoff Frequency = " + string(wc) + " rad/s");
+disp("Phase at cutoff frequency = " + string(phase_wc) + " degrees");
+
+disp("Natural Frequency = 10 rad/s");
+disp("Damping Ratio = 0.5");
