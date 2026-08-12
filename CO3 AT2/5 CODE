@@ -1,0 +1,60 @@
+clc;
+clear;
+close;
+
+// Define Laplace variable
+s = poly(0, "s");
+
+// Transfer function
+num = 10*(s+1);
+den = (s+2)*(s+5);
+
+H = syslin("c", num, den);
+
+disp("Transfer Function H(s) = ");
+disp(H);
+
+// Partial fraction calculation
+// H(s) = A/(s+2) + B/(s+5)
+//
+// A = -10/3
+// B = 40/3
+
+A = -10/3;
+B = 40/3;
+
+disp("Partial Fraction Expansion:");
+disp("H(s) = (-10/3)/(s+2) + (40/3)/(s+5)");
+
+// Time vector
+t = 0:0.001:5;
+
+// Impulse response
+h = csim("impulse", t, H);
+
+// Step response
+y = csim("step", t, H);
+
+// Plot
+clf();
+
+subplot(2,1,1);
+plot(t, h);
+xlabel("Time (s)");
+ylabel("h(t)");
+title("Impulse Response");
+xgrid();
+
+subplot(2,1,2);
+plot(t, y);
+xlabel("Time (s)");
+ylabel("y(t)");
+title("Step Response");
+xgrid();
+
+// Time constants
+tau1 = 1/2;
+tau2 = 1/5;
+
+disp("Time Constant 1 = " + string(tau1) + " seconds");
+disp("Time Constant 2 = " + string(tau2) + " seconds");
