@@ -1,0 +1,48 @@
+clc;
+clear;
+close;
+
+// Transfer function:
+// d2y/dt2 + 6 dy/dt + 8y = 8x(t)
+// H(s) = Y(s)/X(s) = 8/(s^2 + 6s + 8)
+
+s = poly(0, "s");
+
+num = 8;
+den = s^2 + 6*s + 8;
+
+H = syslin("c", num, den);
+
+disp("Transfer Function H(s) = ");
+disp(H);
+
+// Time vector
+t = 0:0.001:5;
+
+// Step input
+u = ones(t);
+
+// Step response
+y = csim("step", t, H);
+
+// Plot
+clf();
+plot(t, y);
+xlabel("Time (s)");
+ylabel("Voltage across Capacitor (V)");
+title("Step Response of RLC Series Circuit");
+xgrid();
+
+// Important values
+disp("Final value = " + string(y($)));
+
+// Theoretical characteristics
+p = roots(den);
+disp("Poles = ");
+disp(p);
+
+wn = sqrt(8);
+zeta = 6/(2*wn);
+
+disp("Natural Frequency wn = " + string(wn) + " rad/s");
+disp("Damping Ratio zeta = " + string(zeta));
